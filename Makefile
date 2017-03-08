@@ -25,7 +25,7 @@ LFLAGS += -Wl,-Map=$(BUILDDIR)/$(TARGET).map
 CXX = arm-none-eabi-g++
 
 SRCS += main.cpp
-SRCS += deps/system_stm32f7xx.c
+SRCS += deps/system_stm32f7xx.cpp
 SRCS += startup_stm32f767xx.s
 
 BUILDDIR = build
