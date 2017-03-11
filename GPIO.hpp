@@ -44,34 +44,34 @@ public:
 
 	void set_mode(Mode mode)
 	{
-		write_bits(_port.MODER, 0x3, 2*PinNum, static_cast<int>(mode));
+		write_bits(_port.MODER, 2*PinNum, 0x3, static_cast<int>(mode));
 	}
 
 	void set_speed(Speed speed)
 	{
-		write_bits(_port.OSPEEDR, 0x3, 2*PinNum, static_cast<int>(speed));
+		write_bits(_port.OSPEEDR, 2*PinNum, 0x3, static_cast<int>(speed));
 	}
 
 	void set_pull(Pull pull)
 	{
-		write_bits(_port.PUPDR, 0x3, 2*PinNum, static_cast<int>(pull));
+		write_bits(_port.PUPDR, 2*PinNum, 0x3, static_cast<int>(pull));
 	}
 
 	void set_output_type(OutputType otype)
 	{
-		write_bits(_port.OTYPER, 0x1, PinNum, static_cast<int>(otype));
+		write_bits(_port.OTYPER, PinNum, 0x1, static_cast<int>(otype));
 	}
 
 	template<int N = PinNum>
 	typename std::enable_if<(N < 8)>::type set_alternate_function(int af)
 	{
-		write_bits(_port.AFRL, 0xF, 4*N, af);
+		write_bits(_port.AFRL, 4*N, 0xF, af);
 	}
 
 	template<int N = PinNum>
 	typename std::enable_if<(N >= 8)>::type set_alternate_function(int af)
 	{
-		write_bits(_port.AFRH, 0xF, 4*(N - 8), af);
+		write_bits(_port.AFRH, 4*(N - 8), 0xF, af);
 	}
 
 	void set() { _port.BSRR = 1U << PinNum; }
