@@ -1,10 +1,24 @@
 #pragma once
 
-class RCC
-{
-public:
-	static constexpr uintptr_t base = 0x40023800U;
-	volatile uint32_t& AHB1ENR = memory(base + 0x30);
+#include "stm32f767xx.h"
 
-	void enable_all_gpio_clocks() { AHB1ENR |= 0x3FF; }
-};
+namespace ResetClockControl
+{
+
+static void enable_all_gpio_clocks()
+{
+	RCC->AHB1ENR |=
+		RCC_AHB1ENR_GPIOAEN |
+		RCC_AHB1ENR_GPIOBEN |
+		RCC_AHB1ENR_GPIOCEN |
+		RCC_AHB1ENR_GPIODEN |
+		RCC_AHB1ENR_GPIOEEN |
+		RCC_AHB1ENR_GPIOFEN |
+		RCC_AHB1ENR_GPIOGEN |
+		RCC_AHB1ENR_GPIOHEN |
+		RCC_AHB1ENR_GPIOIEN |
+		RCC_AHB1ENR_GPIOJEN |
+		RCC_AHB1ENR_GPIOKEN;
+}
+
+}

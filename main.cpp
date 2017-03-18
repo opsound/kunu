@@ -6,8 +6,7 @@
 
 int main()
 {
-	RCC rcc;
-	rcc.enable_all_gpio_clocks();
+	ResetClockControl::enable_all_gpio_clocks();
 
 	Pin<Port::B, 14> led_red(Mode::Output, Speed::VeryHigh, Pull::None, OutputType::PushPull, 0);
 	Pin<Port::B, 7> led_blue(Mode::Output, Speed::VeryHigh, Pull::None, OutputType::PushPull, 0);
