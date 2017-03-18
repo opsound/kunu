@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Misc.hpp"
+#include "stm32f767xx.h"
+
 
 enum class Port { A, B, C, D, E, F, G, H, I, J, K };
 enum class Speed { Low, Medium, High, VeryHigh };
@@ -8,22 +10,24 @@ enum class Pull { None, Up, Down };
 enum class OutputType { PushPull, OpenDrain };
 enum class Mode { Input, Output, AlternateFunction, Analog };
 
-template<Port P>
-class GPIO
+constexpr GPIO_TypeDef* to_gpio(Port port)
 {
-public:
-	static constexpr uintptr_t base = 0x40020000U + (static_cast<int>(P) * 0x400U);
-	volatile uint32_t& MODER = memory(base + 0x00);
-	volatile uint32_t& OTYPER = memory(base + 0x04);
-	volatile uint32_t& OSPEEDR = memory(base + 0x08);
-	volatile uint32_t& PUPDR = memory(base + 0x0C);
-	volatile uint32_t& IDR = memory(base + 0x10);
-	volatile uint32_t& ODR = memory(base + 0x14);
-	volatile uint32_t& BSRR = memory(base + 0x18);
-	volatile uint32_t& LCKR = memory(base + 0x1C);
-	volatile uint32_t& AFRL = memory(base + 0x20);
-	volatile uint32_t& AFRH = memory(base + 0x24);
-};
+	switch (port)
+	{
+		case Port::A: return GPIOA;
+		case Port::B: return GPIOB;
+		case Port::C: return GPIOC;
+		case Port::D: return GPIOD;
+		case Port::E: return GPIOE;
+		case Port::F: return GPIOF;
+		case Port::G: return GPIOG;
+		case Port::H: return GPIOH;
+		case Port::I: return GPIOI;
+		case Port::J: return GPIOJ;
+		case Port::K: return GPIOK;
+	}
+	return nullptr;
+}
 
 template<Port P, int PinNum>
 class Pin
@@ -44,42 +48,42 @@ public:
 
 	void set_mode(Mode mode)
 	{
-		write_bits(_port.MODER, 2*PinNum, 0x3, static_cast<int>(mode));
+		write_bits(_port->MODER, 2 * PinNum, 0x3, static_cast<int>(mode));
 	}
 
 	void set_speed(Speed speed)
 	{
-		write_bits(_port.OSPEEDR, 2*PinNum, 0x3, static_cast<int>(speed));
+		write_bits(_port->OSPEEDR, 2 * PinNum, 0x3, static_cast<int>(speed));
 	}
 
 	void set_pull(Pull pull)
 	{
-		write_bits(_port.PUPDR, 2*PinNum, 0x3, static_cast<int>(pull));
+		write_bits(_port->PUPDR, 2 * PinNum, 0x3, static_cast<int>(pull));
 	}
 
 	void set_output_type(OutputType otype)
 	{
-		write_bits(_port.OTYPER, PinNum, 0x1, static_cast<int>(otype));
+		write_bits(_port->OTYPER, PinNum, 0x1, static_cast<int>(otype));
 	}
 
 	template<int N = PinNum>
 	typename std::enable_if<(N < 8)>::type set_alternate_function(int af)
 	{
-		write_bits(_port.AFRL, 4*N, 0xF, af);
+		write_bits(_port->AFR[0], 4 * N, 0xF, af);
 	}
 
 	template<int N = PinNum>
 	typename std::enable_if<(N >= 8)>::type set_alternate_function(int af)
 	{
-		write_bits(_port.AFRH, 4*(N - 8), 0xF, af);
+		write_bits(_port->AFR[1], 4 * (N - 8), 0xF, af);
 	}
 
-	void set() { _port.BSRR = 1U << PinNum; }
+	void set() { _port->BSRR = 1U << PinNum; }
 
-	void clr() { _port.BSRR = (1U << 16) << PinNum; }
+	void clr() { _port->BSRR = (1U << 16) << PinNum; }
 
-	void tgl() { _port.ODR ^= (1 << PinNum); }
+	void tgl() { _port->ODR ^= (1 << PinNum); }
 
 private:
-	GPIO<P> _port;
+	static constexpr GPIO_TypeDef* _port = to_gpio(P);
 };
