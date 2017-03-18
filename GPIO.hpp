@@ -14,17 +14,17 @@ constexpr GPIO_TypeDef* to_gpio(Port port)
 {
 	switch (port)
 	{
-		case Port::A: return GPIOA;
-		case Port::B: return GPIOB;
-		case Port::C: return GPIOC;
-		case Port::D: return GPIOD;
-		case Port::E: return GPIOE;
-		case Port::F: return GPIOF;
-		case Port::G: return GPIOG;
-		case Port::H: return GPIOH;
-		case Port::I: return GPIOI;
-		case Port::J: return GPIOJ;
-		case Port::K: return GPIOK;
+	case Port::A: return GPIOA;
+	case Port::B: return GPIOB;
+	case Port::C: return GPIOC;
+	case Port::D: return GPIOD;
+	case Port::E: return GPIOE;
+	case Port::F: return GPIOF;
+	case Port::G: return GPIOG;
+	case Port::H: return GPIOH;
+	case Port::I: return GPIOI;
+	case Port::J: return GPIOJ;
+	case Port::K: return GPIOK;
 	}
 	return nullptr;
 }
