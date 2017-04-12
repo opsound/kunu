@@ -1,24 +1,20 @@
 #pragma once
 
+#include "GPIO.hpp"
 #include "stm32f767xx.h"
+#include <utility>
 
-namespace ResetClockControl
+namespace rcc
 {
 
-static void enable_all_gpio_clocks()
+void enable_gpio_clock(std::initializer_list<gpio::Port> ports)
 {
-	RCC->AHB1ENR |=
-		RCC_AHB1ENR_GPIOAEN |
-		RCC_AHB1ENR_GPIOBEN |
-		RCC_AHB1ENR_GPIOCEN |
-		RCC_AHB1ENR_GPIODEN |
-		RCC_AHB1ENR_GPIOEEN |
-		RCC_AHB1ENR_GPIOFEN |
-		RCC_AHB1ENR_GPIOGEN |
-		RCC_AHB1ENR_GPIOHEN |
-		RCC_AHB1ENR_GPIOIEN |
-		RCC_AHB1ENR_GPIOJEN |
-		RCC_AHB1ENR_GPIOKEN;
+	uint32_t mask = 0;
+	for (auto p : ports)
+	{
+		mask |= (static_cast<int>(p) << 1);
+	}
+	RCC->AHB1ENR |= mask;
 }
 
 }

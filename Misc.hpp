@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 void escape(void* p)
 {
 	asm volatile("" : : "g"(p) : "memory");

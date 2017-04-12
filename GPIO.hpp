@@ -2,8 +2,13 @@
 
 #include "Misc.hpp"
 #include "stm32f767xx.h"
+#include <cstdint>
+#include <type_traits>
 
+namespace gpio
+{
 
+// order matters
 enum class Port { A, B, C, D, E, F, G, H, I, J, K };
 enum class Speed { Low, Medium, High, VeryHigh };
 enum class Pull { None, Up, Down };
@@ -87,3 +92,5 @@ public:
 private:
 	static constexpr GPIO_TypeDef* _port = to_gpio(P);
 };
+
+}
